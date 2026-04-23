@@ -2,3 +2,17 @@ echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 umount /etc/resolv.conf
 dpkg -i --force-confold /shared/*.deb
 
+# Apply the setting here to avoid the Docker crash
+sysctl -w net.ipv6.conf.eth0.accept_ra=2
+
+# Assign link-local addresses
+ip -6 addr add fe80::1/64 dev eth0
+ip -6 addr add fe80::1/64 dev eth1
+ip -6 addr add fe80::1/64 dev eth2
+
+# CRITICAL: Wait 3 seconds for Duplicate Address Detection to clear!
+sleep 3
+
+# Start the daemons
+/etc/init.d/dnsmasq start
+dhcp6c eth0

@@ -3,3 +3,28 @@ ip addr add 192.168.10.17/29 dev eth1
 
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
+iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
+
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80 -j DNAT --to-destination 192.168.10.2:80
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 22 -j DNAT --to-destination 192.168.10.2:22 
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 8080 -j DNAT --to-destination 192.168.10.18:8080     
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 2222 -j DNAT --to-destination 192.168.10.18:2222
+
+iptables -A FORWARD -i eth0 -o eth2 -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -j ACCEPT
+
+iptables -A FORWARD -d 192.168.10.2 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -d 192.168.10.2 -p tcp --dport 22 -j ACCEPT
+
+iptables -A FORWARD -d 192.168.10.18 -p tcp --dport 8080 -j ACCEPT
+iptables -A FORWARD -d 192.168.10.18 -p tcp --dport 2222 -j ACCEPT
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -o eth0 -p icmp --icmp-type 0 -j ACCEPT
+iptables -A FORWARD -o eth1 -p icmp --icmp-type 0 -j ACCEPT
+
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+iptables -A INPUT -j REJECT --reject-with icmp-port-unreachable
+
+iptables -A FORWARD -j DROP

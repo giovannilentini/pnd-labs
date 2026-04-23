@@ -1,1 +1,9 @@
 umount /etc/resolv.conf
+
+# Enable SLAAC
+sysctl -w net.ipv6.conf.eth0.autoconf=1
+sysctl -w net.ipv6.conf.eth0.accept_ra=2
+ip link set eth0 up
+
+# Run dhclient for IPv6 (-6) in Stateless mode (-S)
+dhclient -6 -S eth0

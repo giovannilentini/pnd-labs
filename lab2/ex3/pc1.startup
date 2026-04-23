@@ -1,4 +1,9 @@
 umount /etc/resolv.conf
-#dpkg -i /shared/dibbler-client*.deb
-#apt install -y dibbler-client
+dpkg -i /shared/dibbler-client*.deb
+apt install -y dibbler-client
 
+sysctl -w net.ipv6.conf.eth0.autoconf=1
+sysctl -w net.ipv6.conf.eth0.accept_ra=2
+ip link set eth0 up
+
+dibbler-client start

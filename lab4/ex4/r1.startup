@@ -5,3 +5,11 @@ ip addr add 192.168.10.17/29 dev eth0
 udhcpd -S
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
+
+iptables -t nat -A POSTROUTING -s 192.168.10.16/29 -o eth1 -j MASQUERADE
+
+iptables -A FORWARD -o eth0 -p icmp --icmp-type 0 -j ACCEPT
+iptables -A FORWARD -i eth1 -p icmp --icmp-type 8 -j ACCEPT
+
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+iptables -A INPUT -j REJECT --reject-with icmp-port-unreachable

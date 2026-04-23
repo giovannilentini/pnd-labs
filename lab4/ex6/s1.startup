@@ -7,6 +7,6 @@ a2enconf fqdn
 /etc/init.d/apache2 restart
 
 
-adduser user --disabled-login --quiet --gecos ""
+adduser user --disabled-password --quiet --gecos ""
 echo "user:password" | chpasswd
 /etc/init.d/ssh start

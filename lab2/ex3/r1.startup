@@ -2,3 +2,20 @@ echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 dpkg -i /shared/*.deb
 apt install -yf dnsmasq 
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+# Enable routing
+sysctl -w net.ipv6.conf.all.forwarding=1
+
+# Bring interface up
+ip link set eth0 up
+
+# Force the Link-Local address to have '1' in the host part
+ip -6 addr flush dev eth0 scope link
+ip -6 addr add fe80::1/64 dev eth0
+
+# Set the IPv6 and IPv4 Global Addresses
+ip -6 addr add 2001:DB8:FEDE:1::1/64 dev eth0
+ip addr add 192.168.100.1/24 dev eth0
+
+# Start the dnsmasq service
+/etc/init.d/dnsmasq start

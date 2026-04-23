@@ -1,0 +1,7 @@
+ip -6 addr add 2001:db8:cafe:1::1/64 dev eth0
+ip -6 addr add 2001:db8:cafe:2::1/64 dev eth1
+
+ip link eth0 set up
+ip link eth1 set up
+
+systcl -w net.ipv6.conf.all.forwarding=1

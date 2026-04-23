@@ -8,3 +8,13 @@ ip addr add 192.168.0.1/24 dev eth1
 udhcpd -S
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
+
+iptables -A FORWARD -d 192.168.10.18 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -d 192.168.10.22 -p tcp --dport 22 -j ACCEPT
+
+iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -t nat -A POSTROUTING -s 192.168.10.16/29 -o eth1 -j MASQUERADE
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to-destination 192.168.10.18:80
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 22 -j DNAT --to-destination 192.168.10.22:22
+

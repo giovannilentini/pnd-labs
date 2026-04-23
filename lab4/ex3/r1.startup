@@ -12,3 +12,26 @@ ip addr add fe80::1/64 dev eth2
 
 ip -6 route add default via fe80::1 dev eth0
 ip route add default via 198.51.100.254 dev eth0
+
+ip6tables -A FORWARD -p ipv6-icmp -j ACCEPT
+
+iptables -A FORWARD -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A FORWARD -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i eth1 -m state --state NEW -j DROP
+ip6tables -A FORWARD -i eth1 -m state --state NEW -j DROP
+
+iptables -A FORWARD -i eth2 -p tcp --dport 22 -j ACCEPT
+ip6tables -A FORWARD -i eth2 -p tcp --dport 22 -j ACCEPT
+
+iptables -A FORWARD -i eth0 -d 203.0.113.80 -p tcp -m multiport --dport 80,443 -j ACCEPT
+ip6tables -A FORWARD -i eth0 -d 2001:db8:cafe:2::80 -p tcp -m multiport --dport 80,443 -j ACCEPT
+
+iptables -A FORWARD -i eth0 -d 203.0.113.25 -p tcp -m multiport --dport 587,465 -j ACCEPT
+ip6tables -A FORWARD -i eth0 -d 2001:db8:cafe:2::25 -p tcp -m multiport --dport 587,465 -j ACCEPT
+
+iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -j DROP
+ip6tables -A FORWARD -i eth0 -j DROP

@@ -1,1 +1,2 @@
-
+ip -6 addr add 2001:db8:cafe:1::102/64 dev eth0
+ip -6 route add default via 2001:db8:cafe:1::1/64 dev eth0
