@@ -1,0 +1,1 @@
+100.60.0.2 password_per_prima_fase

@@ -6,4 +6,6 @@ dpkg -i --force-confold /shared/strongswan* /shared/libdbus-glib-1-2* /shared/li
 apt install -f
 cp shared/charon-logging.conf /etc/strongswan.d/
 
+echo -e '#!/bin/bash\nipsec start\nsleep 3\nswanctl --load-all' > script.sh && chmod +x script.sh
 
+./script.sh
