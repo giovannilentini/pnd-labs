@@ -1,4 +1,7 @@
 ip addr add 100.60.0.100/16 dev eth0
 ip route add default via 100.60.0.1
 
-dpkg -i /shared/*.deb
+export DEBIAN_FRONTEND=noninteractive
+dpkg --force-confdef --force-confold -i /shared/*.deb
+
+/etc/init.d/setkey start -f /etc/ipsec-tools.conf
